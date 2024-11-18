@@ -1,0 +1,16 @@
+{% for todo in todos %}
+<li id="todo-{{ todo.id }}" class="box">
+    <div class="is-flex is-justify-content-space-between is-align-items-center">
+        <span>{{ todo.text }}</span>
+        <div>
+            <button class="button is-small is-warning" onclick="enableEditing({{ todo.id }}, '{{ todo.text }}')">Edit</button>
+            <button class="button is-small is-danger"
+                    hx-post="/delete/{{ todo.id }}"
+                    hx-target="#todo-list"
+                    hx-swap="innerHTML">
+                Delete
+            </button>
+        </div>
+    </div>
+</li>
+{% endfor %}
