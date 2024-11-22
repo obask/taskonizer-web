@@ -7,28 +7,26 @@
     <script src="https://unpkg.com/htmx.org"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma/css/bulma.min.css">
     <script>
-        // Inline editing logic
+        // Enable editing logic using a template
         function enableEditing(todoId, text) {
             const listItem = document.querySelector(`#todo-${todoId}`);
-            const editForm = `
-                <form hx-post="/edit/${todoId}" hx-target="#todo-list" hx-swap="innerHTML" onsubmit="return false;">
-                    <input name="text" class="input is-small" type="text" value="${text}" required>
-                    <button type="submit" class="button is-small is-success">Save</button>
-                    <button type="button" class="button is-small is-light" onclick="cancelEditing(${todoId}, '${text}')">Cancel</button>
-                </form>
-            `;
-            listItem.innerHTML = editForm;
+            const template = document.querySelector("#edit-template").content.cloneNode(true);
+
+            // Fill template fields
+            template.querySelector("form").id = `todo-${todoId}`
+            template.querySelector("form").setAttribute("hx-post", `/edit/${todoId}`);
+            template.querySelector("form").setAttribute("hx-target", "#todo-list");
+            template.querySelector("input[name='text']").value = text;
+
+            // Set cancel logic
+            template.querySelector("button.cancel").addEventListener("click", () => cancelEditing(todoId, listItem));
+
+            listItem.replaceWith(template);
         }
 
         function cancelEditing(todoId, text) {
             const listItem = document.querySelector(`#todo-${todoId}`);
-            listItem.innerHTML = `
-                <span>${text}</span>
-                <div>
-                    <button class="button is-small is-warning" onclick="enableEditing(${todoId}, '${text}')">Edit</button>
-                    <button class="button is-small is-danger" hx-post="/delete/${todoId}" hx-target="#todo-list" hx-swap="innerHTML">Delete</button>
-                </div>
-            `;
+            listItem.replaceWith(text);
         }
     </script>
 </head>
@@ -50,6 +48,23 @@
         <ul id="todo-list" class="mt-5">
             {% include "partials/todo_list.html" %}
         </ul>
+
+        <!-- Templates -->
+        <template id="edit-template">
+            <form hx-post="" hx-target="#todo-list" hx-swap="innerHTML" onsubmit="return false;">
+                <input name="text" class="input is-small" type="text" required>
+                <button type="submit" class="button is-small is-success">Save</button>
+                <button type="button" class="button is-small is-light cancel">Cancel</button>
+            </form>
+        </template>
+
+        <template id="view-template">
+            <span></span>
+            <div>
+                <button class="button is-small is-warning edit">Edit</button>
+                <button class="button is-small is-danger delete">Delete</button>
+            </div>
+        </template>
     </div>
 </body>
 </html>
