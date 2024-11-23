@@ -42,7 +42,7 @@ async def delete_todo(request: Request, todo_id: int):
     """Delete a TODO."""
     global todos
     todos = [todo for todo in todos if todo["id"] != todo_id]
-    return templates.TemplateResponse("partials/todo_list.html", {"request": request, "todos": todos})
+    return ""
 
 
 @app.post("/edit/{todo_id}", response_class=HTMLResponse)
@@ -51,4 +51,5 @@ async def edit_todo(request: Request, todo_id: int, text: str = Form(...)):
     for todo in todos:
         if todo["id"] == todo_id:
             todo["text"] = text
-    return templates.TemplateResponse("partials/todo_list.html", {"request": request, "todos": todos})
+            return templates.TemplateResponse("partials/todo_item.html", {"request": request, "todo": todo})
+
