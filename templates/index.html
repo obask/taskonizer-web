@@ -5,6 +5,12 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>Vanilla JS TODO App</title>
     <link href="https://cdn.jsdelivr.net/npm/bulma/css/bulma.min.css" rel="stylesheet">
+    <style>
+        .is-selected {
+            background-color: #f0f0f0;
+            border: 1px solid #3273dc; /* Adjust the color as needed */
+        }
+    </style>
     <script src="app.js"></script>
 </head>
 <body>
@@ -22,7 +28,7 @@
     </form>
 
     <!-- TODO List -->
-    <ul class="mt-5" id="todo-list">
+    <ul class="mt-5" id="todo-list" data-selected-id="">
         {% include "partials/todo_list.html" %}
     </ul>
 
